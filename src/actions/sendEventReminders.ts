@@ -138,7 +138,7 @@ export async function sendEventReminders(dryRun = false) {
         });
       } catch (err) {
         failures.push({
-          participantId: String((participant as ParticipantRecord).id),
+          participantId: String(participant.id),
           error: err instanceof Error ? err.message : 'Unbekannter Fehler',
         });
       }
