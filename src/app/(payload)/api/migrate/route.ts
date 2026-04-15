@@ -12,9 +12,7 @@ export async function POST(request: Request) {
 
   const payload = await getPayload({ config: configPromise });
 
-  await payload.db.migrate({
-    migrations: payload.db.migrations,
-  });
+  await payload.db.migrate();
 
   return Response.json({ ok: true });
 }
