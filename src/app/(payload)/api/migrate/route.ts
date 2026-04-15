@@ -13,9 +13,7 @@ export async function POST(request: Request) {
   const payload = await getPayload({ config: configPromise });
 
   await payload.db.migrate({
-    payload,
     migrations: payload.db.migrations,
-    req: undefined,
   });
 
   return Response.json({ ok: true });
