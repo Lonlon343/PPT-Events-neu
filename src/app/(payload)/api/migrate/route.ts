@@ -16,7 +16,7 @@ export async function POST(request: Request) {
   const payload = await getPayload({ config: configPromise });
 
   try {
-    await payload.db.migrate({ payload });
+    await payload.db.migrate();
     return Response.json({ ok: true });
   } catch (error) {
     payload.logger.error({ err: error, msg: 'Migration failed' });
