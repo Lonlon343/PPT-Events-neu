@@ -4,11 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev --no-server-fast-refresh",
-    "build": "NODE_OPTIONS=--experimental-fetch node --import tsx ./scripts/payload-cli.cjs migrate --config src/payload.config.ts && next build",
+    "build": "(payload migrate:create --name deploy || true) && payload migrate && next build",
     "start": "next start",
     "lint": "eslint",
-    "payload:migrate": "NODE_OPTIONS=--experimental-fetch node --import tsx ./scripts/payload-cli.cjs migrate --config src/payload.config.ts",
-    "payload:generate": "NODE_OPTIONS=--experimental-fetch node --import tsx ./scripts/payload-cli.cjs generate:types --config src/payload.config.ts"
+    "payload:migrate": "payload migrate",
+    "payload:generate": "payload generate:types"
   },
   "dependencies": {
     "@base-ui/react": "^1.4.0",
