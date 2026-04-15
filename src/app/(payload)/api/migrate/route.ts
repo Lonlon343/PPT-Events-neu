@@ -1,5 +1,6 @@
 import { getPayload } from 'payload';
 import configPromise from '@payload-config';
+import { pushDevSchema } from '@payloadcms/drizzle';
 
 export const dynamic = 'force-dynamic';
 
@@ -12,7 +13,7 @@ export async function POST(request: Request) {
 
   const payload = await getPayload({ config: configPromise });
 
-  await payload.db.migrate();
+  await pushDevSchema(payload.db);
 
   return Response.json({ ok: true });
 }
