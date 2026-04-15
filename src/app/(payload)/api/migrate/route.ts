@@ -13,7 +13,17 @@ export async function POST(request: Request) {
 
   const payload = await getPayload({ config: configPromise });
 
-  await pushDevSchema(payload.db as unknown as Parameters<typeof pushDevSchema>[0]);
-
-  return Response.json({ ok: true });
+  try {
+    await pushDevSchema(payload.db as unknown as Parameters<typeof pushDevSchema>[0]);
+    return Response.json({ ok: true });
+  } catch (error) {
+    payload.logger.error({ err: error, msg: 'Migration failed' });
+    return Response.json(
+      {
+        ok: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
+      },
+      { status: 500 },
+    );
+  }
 }
