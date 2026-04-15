@@ -13,7 +13,7 @@ export async function POST(request: Request) {
 
   const payload = await getPayload({ config: configPromise });
 
-  await pushDevSchema(payload.db);
+  await pushDevSchema(payload.db as unknown as Parameters<typeof pushDevSchema>[0]);
 
   return Response.json({ ok: true });
 }
