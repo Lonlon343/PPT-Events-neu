@@ -4,11 +4,11 @@ import { postgresAdapter } from '@payloadcms/db-postgres';
 import { lexicalEditor } from '@payloadcms/richtext-lexical';
 import path from 'path';
 
-import { Users } from './collections/Users.ts';
-import { Media } from './collections/Media.ts';
-import { Events } from './collections/Events.ts';
-import { Participants } from './collections/Participants.ts';
-import { ReminderLogs } from './collections/ReminderLogs.ts';
+import { Users } from './collections/Users';
+import { Media } from './collections/Media';
+import { Events } from './collections/Events';
+import { Participants } from './collections/Participants';
+import { ReminderLogs } from './collections/ReminderLogs';
 
 const dirname = path.resolve(process.cwd(), 'src');
 const databaseUri = process.env.DATABASE_URL || '';
