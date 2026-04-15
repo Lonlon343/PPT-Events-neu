@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --no-server-fast-refresh",
-    "build": "next build",
+    "build": "NODE_OPTIONS=--experimental-fetch node --import tsx ./scripts/payload-cli.cjs migrate --config src/payload.config.ts && next build",
     "start": "next start",
     "lint": "eslint",
     "payload:migrate": "NODE_OPTIONS=--experimental-fetch node --import tsx ./scripts/payload-cli.cjs migrate --config src/payload.config.ts",

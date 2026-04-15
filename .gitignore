@@ -33,6 +33,11 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 
+# payload sqlite dev database
+payload.db
+payload.db-shm
+payload.db-wal
+
 # vercel
 .vercel
 
