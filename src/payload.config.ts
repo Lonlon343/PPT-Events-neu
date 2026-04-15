@@ -14,6 +14,16 @@ const dirname = path.resolve(process.cwd(), 'src');
 const databaseUri = process.env.DATABASE_URL || '';
 const isPostgres = databaseUri.startsWith('postgres');
 
+if (process.env.VERCEL && !isPostgres) {
+  throw new Error(
+    `[payload.config] DATABASE_URL must be a postgres connection string on Vercel. ` +
+      `Got: ${databaseUri ? `"${databaseUri.slice(0, 15)}..."` : '(empty)'}. ` +
+      `Check Vercel → Settings → Environment Variables and ensure DATABASE_URL is enabled for the Production and Build phases.`,
+  );
+}
+
+console.log(`[payload.config] Using ${isPostgres ? 'postgres' : 'sqlite'} adapter`);
+
 export default buildConfig({
   admin: {
     user: Users.slug,
