@@ -4,13 +4,14 @@
   "private": true,
   "scripts": {
     "dev": "next dev --no-server-fast-refresh",
-    "build": "(payload migrate:create --name deploy || true) && payload migrate && next build",
+    "build": "(tsx ./node_modules/payload/dist/bin/index.js migrate:create --name deploy --config src/payload.config.ts || true) && tsx ./node_modules/payload/dist/bin/index.js migrate --config src/payload.config.ts && next build",
     "start": "next start",
     "lint": "eslint",
-    "payload:migrate": "payload migrate",
-    "payload:generate": "payload generate:types"
+    "payload:migrate": "tsx ./node_modules/payload/dist/bin/index.js migrate --config src/payload.config.ts",
+    "payload:generate": "tsx ./node_modules/payload/dist/bin/index.js generate:types --config src/payload.config.ts"
   },
   "dependencies": {
+    "tsx": "^4.21.0",
     "@base-ui/react": "^1.4.0",
     "@payloadcms/db-postgres": "^3.82.1",
     "@payloadcms/db-sqlite": "^3.82.1",
