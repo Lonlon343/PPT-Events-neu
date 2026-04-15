@@ -11,7 +11,7 @@ import { Participants } from './collections/Participants';
 import { ReminderLogs } from './collections/ReminderLogs';
 
 const dirname = path.resolve(process.cwd(), 'src');
-const databaseUri = process.env.DATABASE_URI || '';
+const databaseUri = process.env.DATABASE_URL || '';
 const isPostgres = databaseUri.startsWith('postgres');
 
 export default buildConfig({
