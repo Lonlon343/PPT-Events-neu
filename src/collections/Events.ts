@@ -111,7 +111,7 @@ export const Events: CollectionConfig = {
       admin: {
         condition: (_, siblingData) => siblingData?.eventType === 'online',
       },
-      validate: (value, { siblingData }) => {
+      validate: (value: unknown, { siblingData }: { siblingData?: { eventType?: string } }) => {
         if (siblingData?.eventType === 'online' && !value) {
           return 'Bitte einen Online-Link angeben.';
         }
