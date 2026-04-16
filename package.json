@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --no-server-fast-refresh",
-    "build": "tsx scripts/push-schema.ts && next build",
+    "build": "node scripts/patch-loadenv.cjs && tsx scripts/push-schema.ts && next build",
     "start": "next start",
     "lint": "eslint",
     "payload:migrate": "tsx ./node_modules/payload/dist/bin/index.js migrate --config src/payload.config.ts",
