@@ -33,7 +33,8 @@ const run = async () => {
       try {
         await adapter.execute({ drizzle, raw: sql });
       } catch (err: any) {
-        if (err.message?.includes('already exists')) {
+        const isDuplicate = err.message?.includes('already exists') || err.code === '42710' || err.code === '42P07';
+        if (isDuplicate) {
           console.log(`[push-schema] Skipped (already exists): ${sql.slice(0, 80)}...`);
         } else {
           throw err;
