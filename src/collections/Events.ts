@@ -2,6 +2,17 @@ import type { CollectionConfig } from 'payload';
 
 export const Events: CollectionConfig = {
   slug: 'events',
+  hooks: {
+    beforeDelete: [
+      async ({ req, id }) => {
+        await req.payload.delete({
+          collection: 'participants',
+          where: { event: { equals: id } },
+          req,
+        });
+      },
+    ],
+  },
   admin: {
     useAsTitle: 'title',
     components: {
