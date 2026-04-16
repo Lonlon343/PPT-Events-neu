@@ -105,7 +105,7 @@ export async function sendEventReminders(dryRun = false) {
         const resend = new Resend(process.env.RESEND_API_KEY);
         await resend.emails.send({
           from: process.env.EMAIL_FROM || 'PPT-Events <noreply@ppt-events.de>',
-          to: participant.email,
+          to: process.env.EMAIL_TEST_OVERRIDE || participant.email,
           subject: `Erinnerung: ${ev.title}`,
           react: createElement(EventReminderEmail, {
             firstName: participant.firstName,

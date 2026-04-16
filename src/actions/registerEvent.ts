@@ -41,12 +41,13 @@ export async function registerForEvent(
   }
 
   const { firstName, lastName, email, company, message, eventId } = parsed.data;
+  const eventIdNum = Number(eventId);
 
   try {
     const payload = await getPayload({ config: configPromise });
 
     // Check capacity
-    const event = await payload.findByID({ collection: 'events', id: eventId });
+    const event = await payload.findByID({ collection: 'events', id: eventIdNum });
     if (!event) {
       return { status: 'error', message: 'Event nicht gefunden.' };
     }
@@ -54,7 +55,7 @@ export async function registerForEvent(
     if (event.capacity) {
       const { totalDocs } = await payload.find({
         collection: 'participants',
-        where: { event: { equals: eventId } },
+        where: { event: { equals: eventIdNum } },
         limit: 0,
       });
       if (totalDocs >= event.capacity) {
@@ -71,7 +72,7 @@ export async function registerForEvent(
       where: {
         and: [
           { email: { equals: email } },
-          { event: { equals: eventId } },
+          { event: { equals: eventIdNum } },
         ],
       },
       limit: 1,
@@ -92,7 +93,7 @@ export async function registerForEvent(
         email,
         company: company || undefined,
         message: message || undefined,
-        event: eventId,
+        event: eventIdNum,
       },
     });
 
@@ -106,7 +107,7 @@ export async function registerForEvent(
         const resend = new Resend(process.env.RESEND_API_KEY);
         await resend.emails.send({
           from: process.env.EMAIL_FROM || 'PPT-Events <noreply@ppt-events.de>',
-          to: email,
+          to: process.env.EMAIL_TEST_OVERRIDE || email,
           subject: `Anmeldebestätigung: ${event.title}`,
           react: createElement(EventConfirmationEmail, {
             firstName,
