@@ -2,6 +2,7 @@ import { buildConfig } from 'payload';
 import { sqliteAdapter } from '@payloadcms/db-sqlite';
 import { postgresAdapter } from '@payloadcms/db-postgres';
 import { lexicalEditor } from '@payloadcms/richtext-lexical';
+import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob';
 import path from 'path';
 
 import { Users } from './collections/Users';
@@ -9,6 +10,8 @@ import { Media } from './collections/Media';
 import { Events } from './collections/Events';
 import { Participants } from './collections/Participants';
 import { ReminderLogs } from './collections/ReminderLogs';
+
+const blobToken = process.env.BLOB_READ_WRITE_TOKEN;
 
 const dirname = path.resolve(process.cwd(), 'src');
 const databaseUri = process.env.DATABASE_URL || '';
@@ -33,6 +36,15 @@ export default buildConfig({
   },
   collections: [Users, Media, Events, Participants, ReminderLogs],
   editor: lexicalEditor({}),
+  plugins: blobToken
+    ? [
+        vercelBlobStorage({
+          enabled: true,
+          collections: { media: true },
+          token: blobToken,
+        }),
+      ]
+    : [],
   db: isPostgres
     ? postgresAdapter({ pool: { connectionString: databaseUri } })
     : sqliteAdapter({ client: { url: 'file:./payload.db' } }),

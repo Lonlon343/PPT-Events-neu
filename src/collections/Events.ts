@@ -41,11 +41,10 @@ export const Events: CollectionConfig = {
       hooks: {
         beforeValidate: [
           ({ value, data }) => {
-            if (value) return value;
-            return data?.title
-              ?.toLowerCase()
-              .replace(/[^a-z0-9]/g, '-')
-              .replace(/-+/g, '-')
+            const source = (typeof value === 'string' && value.trim()) || data?.title || '';
+            return source
+              .toLowerCase()
+              .replace(/[^a-z0-9]+/g, '-')
               .replace(/^-|-$/g, '');
           },
         ],

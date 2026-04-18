@@ -10,7 +10,16 @@ export const Media: CollectionConfig = {
     {
       name: 'alt',
       type: 'text',
-      required: true,
+      hooks: {
+        beforeValidate: [
+          ({ value, data }) => {
+            if (typeof value === 'string' && value.trim()) return value;
+            const filename = (data as { filename?: string } | undefined)?.filename;
+            if (!filename) return value;
+            return filename.replace(/\.[^.]+$/, '').replace(/[-_]+/g, ' ');
+          },
+        ],
+      },
     },
   ],
 };
