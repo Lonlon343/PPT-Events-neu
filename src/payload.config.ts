@@ -13,6 +13,14 @@ import { ReminderLogs } from './collections/ReminderLogs';
 
 const blobToken = process.env.BLOB_READ_WRITE_TOKEN;
 
+if (process.env.VERCEL && !blobToken) {
+  console.warn(
+    '[payload.config] BLOB_READ_WRITE_TOKEN is NOT set at runtime. ' +
+      'Uploads will fail with ENOENT mkdir. ' +
+      'Check Vercel → Settings → Environment Variables → enable for Production, Preview, AND Build, then redeploy.',
+  );
+}
+
 const dirname = path.resolve(process.cwd(), 'src');
 const databaseUri = process.env.DATABASE_URL || '';
 const isPostgres = databaseUri.startsWith('postgres');
