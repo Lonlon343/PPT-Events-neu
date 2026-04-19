@@ -27,8 +27,21 @@ const run = async () => {
       await adapter.execute({ drizzle, raw: sql });
     } catch (err: any) {
       const code = err.code ?? err.cause?.code;
-      if (code === '42710' || code === '42P07' || err.message?.includes('already exists')) {
-        // table/type already exists — skip silently
+      // 42P07 = duplicate_table, 42710 = duplicate_object (type/constraint),
+      // 42701 = duplicate_column. All "already exists" cases — phase 2 reconciles.
+      // 42703 = undefined_column: happens when a new collection adds an FK column
+      // to an existing relation table (e.g. payload_locked_documents_rels). The
+      // CREATE TABLE is skipped because the table exists, so the FK ALTER fails
+      // since the column hasn't been added yet. Phase 2 (pushSchema) adds the
+      // column AND re-adds the FK via its diff.
+      if (
+        code === '42710' ||
+        code === '42P07' ||
+        code === '42701' ||
+        code === '42703' ||
+        err.message?.includes('already exists')
+      ) {
+        // skip silently — phase 2 will reconcile
       } else {
         throw err;
       }
