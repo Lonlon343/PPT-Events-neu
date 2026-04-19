@@ -17,19 +17,19 @@ export default function ImpressumPage() {
           <p>
             [Firmenname]
             <br />
-            [Straße und Hausnummer]
+            Alexanderstraße 28
             <br />
-            [PLZ Ort]
+            40210 Düsseldorf
           </p>
 
           <h2 className="text-xl font-bold mt-8">Vertreten durch</h2>
-          <p>[Name der vertretungsberechtigten Person]</p>
+          <p>Maurice Krüger</p>
 
           <h2 className="text-xl font-bold mt-8">Kontakt</h2>
           <p>
-            Telefon: [Telefonnummer]
+            Telefon: 0541 67337099
             <br />
-            E-Mail: [E-Mail-Adresse]
+            E-Mail: info@ppt-events.de
           </p>
 
           <h2 className="text-xl font-bold mt-8">Umsatzsteuer-ID</h2>
