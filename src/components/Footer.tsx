@@ -32,7 +32,6 @@ export function Footer() {
       <div className="border-t border-white/10">
         <div className="container mx-auto px-6 lg:px-12 max-w-6xl py-6 text-xs text-white/50 flex flex-col md:flex-row justify-between gap-2">
           <p>© {year} PPT-Events. Alle Rechte vorbehalten.</p>
-          <p>Copyright © 2026 PPT-Events</p>
         </div>
       </div>
     </footer>
