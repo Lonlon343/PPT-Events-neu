@@ -10,6 +10,7 @@ import { Media } from './collections/Media';
 import { Events } from './collections/Events';
 import { Participants } from './collections/Participants';
 import { ReminderLogs } from './collections/ReminderLogs';
+import { Subscribers } from './collections/Subscribers';
 
 const blobToken = process.env.BLOB_READ_WRITE_TOKEN;
 
@@ -42,7 +43,7 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Media, Events, Participants, ReminderLogs],
+  collections: [Users, Media, Events, Participants, ReminderLogs, Subscribers],
   editor: lexicalEditor({}),
   plugins: blobToken
     ? [

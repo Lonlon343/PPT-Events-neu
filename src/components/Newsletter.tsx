@@ -2,20 +2,22 @@
 
 import { motion } from "framer-motion";
 import { Mail } from "lucide-react";
-import { useState } from "react";
+import { useActionState } from "react";
+import {
+  subscribeNewsletter,
+  type SubscribeState,
+} from "@/actions/subscribeNewsletter";
+
+const initialState: SubscribeState = { status: "idle" };
 
 export function Newsletter() {
-  const [subscribed, setSubscribed] = useState(false);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setSubscribed(true);
-    // In a real app, integrate an API call here.
-  };
+  const [state, action, isPending] = useActionState(
+    subscribeNewsletter,
+    initialState,
+  );
 
   return (
     <section className="py-24 bg-white relative overflow-hidden">
-      {/* Decorative blurred circle */}
       <div className="absolute top-0 right-0 w-96 h-96 bg-ppt-blue/5 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-80 h-80 bg-ppt-pink/5 rounded-full blur-3xl pointer-events-none" />
 
@@ -40,7 +42,7 @@ export function Newsletter() {
           >
             Newsletter
           </motion.p>
-          
+
           <motion.h2
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -51,17 +53,17 @@ export function Newsletter() {
             Verpasse keine Events und bleibe immer auf dem Laufenden
           </motion.h2>
 
-          {subscribed ? (
-            <motion.div 
+          {state.status === "success" ? (
+            <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               className="mt-8 p-6 bg-[#E6F0EE] text-ppt-blue font-medium rounded-xl border border-ppt-blue/10"
             >
-              Danke, dass du dich eingetragen hast. Du wirst in Kürze von uns hören.
+              {state.message}
             </motion.div>
           ) : (
-            <motion.form 
-              onSubmit={handleSubmit}
+            <motion.form
+              action={action}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -69,20 +71,28 @@ export function Newsletter() {
               className="mt-8 max-w-lg mx-auto flex flex-col sm:flex-row gap-4"
             >
               <div className="flex-1 relative">
-                <input 
-                  type="email" 
+                <input
+                  type="email"
+                  name="email"
                   required
                   placeholder="Deine E-Mail-Adresse"
                   className="w-full bg-white border border-black/10 rounded-full px-6 py-4 outline-none focus:border-ppt-pink focus:ring-2 focus:ring-ppt-pink/20 transition-all font-medium text-ppt-blue placeholder:text-zinc-400"
                 />
               </div>
-              <button 
+              <button
                 type="submit"
-                className="bg-ppt-pink hover:bg-ppt-pink/90 text-white font-bold uppercase tracking-wider py-4 px-8 rounded-full transition-transform transform hover:scale-105 shadow-md hover:shadow-lg shrink-0 whitespace-nowrap"
+                disabled={isPending}
+                className="bg-ppt-pink hover:bg-ppt-pink/90 disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold uppercase tracking-wider py-4 px-8 rounded-full transition-transform transform hover:scale-105 shadow-md hover:shadow-lg shrink-0 whitespace-nowrap"
               >
-                Anmelden
+                {isPending ? "Wird gesendet…" : "Anmelden"}
               </button>
             </motion.form>
+          )}
+
+          {state.status === "error" && (
+            <p className="mt-4 text-sm font-medium text-red-600">
+              {state.message}
+            </p>
           )}
         </div>
       </div>
