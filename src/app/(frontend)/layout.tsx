@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "../globals.css";
 import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
 
 const inter = Inter({
   variable: "--font-sans",
@@ -45,7 +46,8 @@ export default function RootLayout({
     <html lang="de" className="scroll-smooth">
       <body className={`${inter.variable} font-sans bg-ppt-blue text-white antialiased min-h-screen flex flex-col`}>
         <Header />
-        {children}
+        <div className="flex-1">{children}</div>
+        <Footer />
       </body>
     </html>
   );

@@ -49,7 +49,7 @@ export default async function EventDetailPage({ params }: PageProps) {
           <div className="container mx-auto max-w-4xl px-6">
             <RichText
               data={event.description as Parameters<typeof RichText>[0]['data']}
-              className="prose prose-zinc max-w-none"
+              className="richtext"
             />
           </div>
         </section>

@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { CalendarDays, Filter, Grid2x2, List, RotateCcw } from 'lucide-react';
+import { CalendarDays, Grid2x2, List } from 'lucide-react';
 import Link from 'next/link';
 
 type EventToolbarProps = {
@@ -9,9 +9,6 @@ type EventToolbarProps = {
   icalUrl: string;
   view: 'list' | 'grid';
   onToggleView: () => void;
-  filtersOpen: boolean;
-  onToggleFilters: () => void;
-  onReset: () => void;
 };
 
 export function EventToolbar({
@@ -19,9 +16,6 @@ export function EventToolbar({
   icalUrl,
   view,
   onToggleView,
-  filtersOpen,
-  onToggleFilters,
-  onReset,
 }: EventToolbarProps) {
   return (
     <motion.div
@@ -50,24 +44,6 @@ export function EventToolbar({
           >
             {view === 'list' ? <Grid2x2 size={16} /> : <List size={16} />}
             {view === 'list' ? 'Grid' : 'Liste'}
-          </button>
-
-          <button
-            type="button"
-            onClick={onToggleFilters}
-            className="flex items-center gap-2 rounded-full bg-ppt-blue px-4 py-2 text-xs font-semibold uppercase tracking-wide text-white transition hover:bg-ppt-blue/90"
-          >
-            <Filter size={16} />
-            {filtersOpen ? 'Filter ausblenden' : 'Filter anzeigen'}
-          </button>
-
-          <button
-            type="button"
-            onClick={onReset}
-            className="flex items-center gap-2 rounded-full border border-transparent bg-ppt-pink/10 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-ppt-pink transition hover:bg-ppt-pink/20"
-          >
-            <RotateCcw size={16} />
-            Reset
           </button>
         </div>
       </div>

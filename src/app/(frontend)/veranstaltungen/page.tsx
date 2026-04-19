@@ -10,8 +10,6 @@ export default async function VeranstaltungenPage() {
   const payload = await getPayload({ config: configPromise });
 
   let eventsPayload: PayloadEvent[] = [];
-  let locations: string[] = [];
-  let speakers: string[] = [];
 
   try {
     const { docs } = await payload.find({
@@ -27,13 +25,6 @@ export default async function VeranstaltungenPage() {
       limit: 200,
     });
     eventsPayload = docs as PayloadEvent[];
-
-    locations = Array.from(
-      new Set(eventsPayload.map((d) => d.location).filter(Boolean) as string[]),
-    );
-    speakers = Array.from(
-      new Set(eventsPayload.map((d) => d.speaker).filter(Boolean) as string[]),
-    );
   } catch (err) {
     console.error("Payload db error:", err);
   }
@@ -56,8 +47,6 @@ export default async function VeranstaltungenPage() {
 
         <EventsListingClient
           events={mappedEvents}
-          locations={locations}
-          speakers={speakers}
           dateRangeLabel={dateRangeLabel}
         />
       </div>
