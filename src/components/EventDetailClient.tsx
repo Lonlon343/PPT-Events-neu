@@ -5,7 +5,13 @@ import { EventDetails } from '@/components/EventDetails';
 import { RegistrationModal } from '@/components/RegistrationModal';
 import type { EventType } from '@/components/EventList';
 
-export function EventDetailClient({ event }: { event: EventType }) {
+export function EventDetailClient({
+  event,
+  shareUrl,
+}: {
+  event: EventType;
+  shareUrl: string;
+}) {
   const [open, setOpen] = React.useState(false);
 
   return (
@@ -18,6 +24,7 @@ export function EventDetailClient({ event }: { event: EventType }) {
         location={event.location}
         speaker={event.speaker}
         onRegister={() => setOpen(true)}
+        shareUrl={shareUrl}
       />
       {open && (
         <RegistrationModal

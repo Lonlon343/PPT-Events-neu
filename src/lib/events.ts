@@ -61,3 +61,26 @@ export function groupEventsByMonth(events: EventType[]) {
 
   return Array.from(groups.entries()).map(([month, items]) => ({ month, items }));
 }
+
+export function groupEventsByDay(events: EventType[]) {
+  const groups = new Map<string, EventType[]>();
+
+  const sorted = [...events].sort(
+    (a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime(),
+  );
+
+  for (const event of sorted) {
+    const date = new Date(event.startDate);
+    const key = date.toLocaleDateString('de-DE', {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    });
+    const current = groups.get(key) ?? [];
+    current.push(event);
+    groups.set(key, current);
+  }
+
+  return Array.from(groups.entries()).map(([day, items]) => ({ day, items }));
+}

@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { MapPin, Calendar, Clock, Users2 } from 'lucide-react';
 import { EventRegistrationButton } from '@/components/EventRegistrationButton';
+import { EventShareButtons } from '@/components/EventShareButtons';
 
 type EventDetailsProps = {
   title: string;
@@ -14,6 +15,7 @@ type EventDetailsProps = {
   speaker?: string;
   onRegister: () => void;
   description?: React.ReactNode;
+  shareUrl?: string;
 };
 
 export function EventDetails({
@@ -25,9 +27,10 @@ export function EventDetails({
   speaker,
   onRegister,
   description,
+  shareUrl,
 }: EventDetailsProps) {
   return (
-    <section className="bg-[#FBFCFC] pb-24 pt-28 text-ppt-blue">
+    <section className="bg-[#FBFCFC] pb-24 pt-8 text-ppt-blue">
       <div className="container mx-auto grid max-w-6xl gap-10 px-6 lg:grid-cols-[1.2fr,0.8fr]">
         <div className="space-y-8">
           <motion.div
@@ -83,15 +86,23 @@ export function EventDetails({
         <motion.aside
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          className="h-fit rounded-3xl border border-black/5 bg-white p-8 shadow-sm"
+          className="h-fit space-y-8 rounded-3xl border border-black/5 bg-white p-8 shadow-sm"
         >
-          <h2 className="text-xl font-extrabold">Jetzt dabei sein</h2>
-          <p className="mt-3 text-sm text-zinc-500">
-            Sichere dir deinen Platz. Die Anmeldung dauert nur eine Minute.
-          </p>
-          <div className="mt-6">
-            <EventRegistrationButton onClick={onRegister} />
+          <div>
+            <h2 className="text-xl font-extrabold">Jetzt dabei sein</h2>
+            <p className="mt-3 text-sm text-zinc-500">
+              Sichere dir deinen Platz. Die Anmeldung dauert nur eine Minute.
+            </p>
+            <div className="mt-6">
+              <EventRegistrationButton onClick={onRegister} />
+            </div>
           </div>
+
+          {shareUrl && (
+            <div className="border-t border-black/5 pt-6">
+              <EventShareButtons url={shareUrl} title={title} />
+            </div>
+          )}
         </motion.aside>
       </div>
     </section>

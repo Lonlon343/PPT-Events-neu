@@ -1,52 +1,98 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { CalendarDays, Grid2x2, List } from 'lucide-react';
-import Link from 'next/link';
+import { Search, SlidersHorizontal } from 'lucide-react';
+
+export type EventView = 'list' | 'month' | 'day';
 
 type EventToolbarProps = {
-  dateRangeLabel: string;
-  icalUrl: string;
-  view: 'list' | 'grid';
-  onToggleView: () => void;
+  search: string;
+  onSearchChange: (value: string) => void;
+  onSubmitSearch: () => void;
+  filtersVisible: boolean;
+  onToggleFilters: () => void;
+  view: EventView;
+  onChangeView: (view: EventView) => void;
 };
 
+const VIEW_TABS: { key: EventView; label: string }[] = [
+  { key: 'list', label: 'Liste' },
+  { key: 'month', label: 'Monat' },
+  { key: 'day', label: 'Tag' },
+];
+
 export function EventToolbar({
-  dateRangeLabel,
-  icalUrl,
+  search,
+  onSearchChange,
+  onSubmitSearch,
+  filtersVisible,
+  onToggleFilters,
   view,
-  onToggleView,
+  onChangeView,
 }: EventToolbarProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="flex flex-col gap-4 rounded-2xl border border-black/5 bg-white px-6 py-5 shadow-sm"
+      className="rounded-2xl border border-black/5 bg-white p-3 shadow-sm sm:p-4"
     >
-      <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-        <div className="flex items-center gap-3 text-ppt-blue">
-          <CalendarDays size={20} className="text-ppt-pink" />
-          <p className="text-sm font-semibold">{dateRangeLabel}</p>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          onSubmitSearch();
+        }}
+        className="flex flex-col gap-3 lg:flex-row lg:items-center"
+      >
+        <div className="flex flex-1 items-center gap-2 rounded-full border border-black/10 bg-white px-4 py-2.5">
+          <Search size={16} className="text-zinc-400" />
+          <input
+            type="search"
+            value={search}
+            onChange={(e) => onSearchChange(e.target.value)}
+            placeholder="Suche nach Veranstaltungen"
+            className="w-full bg-transparent text-sm text-ppt-blue placeholder:text-zinc-400 focus:outline-none"
+          />
         </div>
 
-        <div className="flex flex-wrap items-center gap-3">
-          <Link
-            href={icalUrl}
-            className="rounded-full border border-ppt-blue/20 bg-ppt-blue/5 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-ppt-blue transition hover:border-ppt-pink/40 hover:text-ppt-pink"
-          >
-            Kalender abonnieren
-          </Link>
+        <button
+          type="submit"
+          className="rounded-full bg-ppt-pink px-5 py-2.5 text-xs font-bold uppercase tracking-wide text-white transition hover:opacity-90"
+        >
+          Suche Veranstaltungen
+        </button>
 
+        <div className="flex flex-wrap items-center gap-3 lg:gap-4">
           <button
             type="button"
-            onClick={onToggleView}
-            className="flex items-center gap-2 rounded-full border border-black/10 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-wide text-ppt-blue transition hover:border-ppt-pink/40 hover:text-ppt-pink"
+            onClick={onToggleFilters}
+            className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-ppt-blue transition hover:text-ppt-pink"
           >
-            {view === 'list' ? <Grid2x2 size={16} /> : <List size={16} />}
-            {view === 'list' ? 'Grid' : 'Liste'}
+            <SlidersHorizontal size={14} />
+            {filtersVisible ? 'Hide Filters' : 'Show Filters'}
           </button>
+
+          <div className="flex items-center gap-1">
+            {VIEW_TABS.map((tab) => {
+              const active = view === tab.key;
+              return (
+                <button
+                  key={tab.key}
+                  type="button"
+                  onClick={() => onChangeView(tab.key)}
+                  className={`relative px-3 py-1.5 text-xs font-semibold uppercase tracking-wide transition ${
+                    active ? 'text-ppt-blue' : 'text-zinc-400 hover:text-ppt-blue'
+                  }`}
+                >
+                  {tab.label}
+                  {active && (
+                    <span className="absolute inset-x-2 -bottom-0.5 h-0.5 rounded bg-ppt-blue" />
+                  )}
+                </button>
+              );
+            })}
+          </div>
         </div>
-      </div>
+      </form>
     </motion.div>
   );
 }
