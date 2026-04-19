@@ -40,6 +40,16 @@ const faqs = [
     answer:
       "Durch die sorgfältige Auswahl der Referenten sind wir fest davon überzeugt, dass wir dir einen möglichst großen Mehrwert in den jeweiligen Themen bieten können. Bestenfalls kannst du für dich etwas aus der gelernten Theorie erfolgreich in die Praxis umsetzen.",
   },
+  {
+    question: "Welchen Nutzen tragt ihr aus den Veranstaltungen?",
+    answer:
+      "Wir haben festgestellt, dass sehr viele Leute ein großes Interesse an der Thematik haben und glauben einfach, dass es in Deutschland viel zu wenig finanzielle Bildung gibt und wollen dagegen einen aktiven Beitrag leisten.",
+  },
+  {
+    question: "Handelt es sich dabei um Verkaufsveranstaltungen o.ä.?",
+    answer:
+      "Nein, wir bieten keine Verkaufsveranstaltungen an. Alle Veranstaltungen auf dieser Seite haben ausschließlich informativen Charakter. Wir glauben einfach, dass es in Deutschland viel zu wenig finanzielle Bildung gibt und wollen dagegen einen Beitrag leisten.",
+  },
 ];
 
 export function FAQ() {
