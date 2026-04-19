@@ -5,7 +5,7 @@ import { getPayload } from 'payload';
 import configPromise from '@payload-config';
 
 const schema = z.object({
-  email: z.string().email('Bitte gib eine gültige E-Mail-Adresse ein.'),
+  email: z.string().email('Bitte gib eine gültige E-Mail-Adresse ein.').max(254),
 });
 
 export type SubscribeState =
@@ -17,6 +17,12 @@ export async function subscribeNewsletter(
   _prevState: SubscribeState,
   formData: FormData,
 ): Promise<SubscribeState> {
+  const honeypot = formData.get('website');
+  if (typeof honeypot === 'string' && honeypot.length > 0) {
+    // Bots fill hidden fields. Pretend success, don't store.
+    return { status: 'success', message: 'Danke! Du erhältst zukünftig unsere Updates.' };
+  }
+
   const parsed = schema.safeParse({ email: formData.get('email') });
   if (!parsed.success) {
     return {

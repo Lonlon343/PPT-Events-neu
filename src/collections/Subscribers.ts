@@ -14,8 +14,10 @@ export const Subscribers: CollectionConfig = {
       'Anmeldungen aus dem Newsletter-Formular. Getrennt von Event-Teilnehmern.',
   },
   access: {
-    read: () => true,
-    create: () => true,
+    read: ({ req }) => Boolean(req.user),
+    create: ({ req }) => Boolean(req.user),
+    update: ({ req }) => Boolean(req.user),
+    delete: ({ req }) => Boolean(req.user),
   },
   fields: [
     {

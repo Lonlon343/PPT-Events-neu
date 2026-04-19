@@ -10,12 +10,7 @@ export function EventParticipantsExportButton() {
     return null;
   }
 
-  const token = process.env.NEXT_PUBLIC_EXPORT_TOKEN;
-  if (!token) {
-    return null;
-  }
-
-  const href = `/api/events/${data.id}/participants.csv?token=${token}`;
+  const href = `/api/events/${data.id}/participants.csv`;
 
   return (
     <div style={{ marginBottom: '16px' }}>

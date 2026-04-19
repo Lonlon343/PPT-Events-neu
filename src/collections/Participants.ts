@@ -7,8 +7,10 @@ export const Participants: CollectionConfig = {
     defaultColumns: ['firstName', 'lastName', 'email', 'event', 'createdAt'],
   },
   access: {
-    read: () => true,
-    create: () => true,
+    read: ({ req }) => Boolean(req.user),
+    create: ({ req }) => Boolean(req.user),
+    update: ({ req }) => Boolean(req.user),
+    delete: ({ req }) => Boolean(req.user),
   },
   fields: [
     {

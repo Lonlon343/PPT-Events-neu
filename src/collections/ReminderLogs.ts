@@ -7,8 +7,10 @@ export const ReminderLogs: CollectionConfig = {
     defaultColumns: ['event', 'participant', 'reminderAt'],
   },
   access: {
-    read: () => true,
-    create: () => true,
+    read: ({ req }) => Boolean(req.user),
+    create: ({ req }) => Boolean(req.user),
+    update: ({ req }) => Boolean(req.user),
+    delete: ({ req }) => Boolean(req.user),
   },
   fields: [
     {

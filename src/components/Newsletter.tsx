@@ -78,6 +78,14 @@ export function Newsletter() {
                   placeholder="Deine E-Mail-Adresse"
                   className="w-full bg-white border border-black/10 rounded-full px-6 py-4 outline-none focus:border-ppt-pink focus:ring-2 focus:ring-ppt-pink/20 transition-all font-medium text-ppt-blue placeholder:text-zinc-400"
                 />
+                <input
+                  type="text"
+                  name="website"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  aria-hidden="true"
+                  className="absolute -left-[9999px] h-0 w-0 opacity-0"
+                />
               </div>
               <button
                 type="submit"

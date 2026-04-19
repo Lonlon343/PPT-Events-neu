@@ -5,13 +5,16 @@ import { getPayload } from 'payload';
 import configPromise from '@payload-config';
 
 const registrationSchema = z.object({
-  firstName: z.string().min(2, 'Bitte gib deinen Vornamen ein.'),
-  lastName: z.string().min(2, 'Bitte gib deinen Nachnamen ein.'),
-  email: z.string().email('Bitte gib eine gültige E-Mail-Adresse ein.'),
-  company: z.string().optional(),
-  message: z.string().optional(),
-  eventId: z.string().min(1),
+  firstName: z.string().min(2, 'Bitte gib deinen Vornamen ein.').max(100),
+  lastName: z.string().min(2, 'Bitte gib deinen Nachnamen ein.').max(100),
+  email: z.string().email('Bitte gib eine gültige E-Mail-Adresse ein.').max(254),
+  company: z.string().max(200).optional(),
+  message: z.string().max(2000).optional(),
+  eventId: z.string().min(1).max(20),
 });
+
+const SUCCESS_MESSAGE = (firstName: string) =>
+  `Super, ${firstName}! Deine Anmeldung wurde verarbeitet. Du erhältst in Kürze eine Bestätigung per E-Mail.`;
 
 export type RegistrationState =
   | { status: 'idle' }
@@ -22,6 +25,15 @@ export async function registerForEvent(
   _prevState: RegistrationState,
   formData: FormData,
 ): Promise<RegistrationState> {
+  const honeypot = formData.get('website');
+  if (typeof honeypot === 'string' && honeypot.length > 0) {
+    // Bots fill hidden fields. Pretend success, don't store.
+    return {
+      status: 'success',
+      message: SUCCESS_MESSAGE(((formData.get('firstName') as string) || '').trim() || 'Hallo'),
+    };
+  }
+
   const raw = {
     firstName: formData.get('firstName') as string,
     lastName: formData.get('lastName') as string,
@@ -78,10 +90,9 @@ export async function registerForEvent(
       limit: 1,
     });
     if (existing.length > 0) {
-      return {
-        status: 'error',
-        message: 'Du bist bereits für dieses Event angemeldet.',
-      };
+      // Same response on duplicate to avoid email enumeration.
+      // The first registration already sent a confirmation email.
+      return { status: 'success', message: SUCCESS_MESSAGE(firstName) };
     }
 
     // Create participant
@@ -133,10 +144,7 @@ export async function registerForEvent(
       }
     }
 
-    return {
-      status: 'success',
-      message: `Super, ${firstName}! Deine Anmeldung war erfolgreich. Wir haben dir eine Bestätigungs-E-Mail geschickt.`,
-    };
+    return { status: 'success', message: SUCCESS_MESSAGE(firstName) };
   } catch (err) {
     console.error('Registration error:', err);
     return {

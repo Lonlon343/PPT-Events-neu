@@ -1,21 +1,21 @@
 import { getPayload } from 'payload';
+import { headers as nextHeaders } from 'next/headers';
 import configPromise from '@payload-config';
 import { buildParticipantsCsv } from '@/lib/participantsExport';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET(
-  request: Request,
+  _request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
-  const url = new URL(request.url);
-  const token = url.searchParams.get('token');
+  const payload = await getPayload({ config: configPromise });
 
-  if (!process.env.EXPORT_TOKEN || token !== process.env.EXPORT_TOKEN) {
+  const { user } = await payload.auth({ headers: await nextHeaders() });
+  if (!user) {
     return new Response('Unauthorized', { status: 401 });
   }
-  const payload = await getPayload({ config: configPromise });
 
   const event = await payload.findByID({ collection: 'events', id });
   if (!event) {
@@ -39,7 +39,8 @@ export async function GET(
   }));
 
   const csv = buildParticipantsCsv(rows);
-  const filename = `teilnehmer-${event.slug || event.id}.csv`;
+  const safeSlug = (event.slug ?? '').toString().replace(/[^a-zA-Z0-9_-]/g, '');
+  const filename = `teilnehmer-${safeSlug || event.id}.csv`;
 
   return new Response(csv, {
     headers: {

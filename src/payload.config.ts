@@ -11,6 +11,7 @@ import { Events } from './collections/Events';
 import { Participants } from './collections/Participants';
 import { ReminderLogs } from './collections/ReminderLogs';
 import { Subscribers } from './collections/Subscribers';
+import { ContactMessages } from './collections/ContactMessages';
 
 const blobToken = process.env.BLOB_READ_WRITE_TOKEN;
 
@@ -25,6 +26,15 @@ if (process.env.VERCEL && !blobToken) {
 const dirname = path.resolve(process.cwd(), 'src');
 const databaseUri = process.env.DATABASE_URL || '';
 const isPostgres = databaseUri.startsWith('postgres');
+
+const payloadSecret = process.env.PAYLOAD_SECRET;
+if (process.env.VERCEL && (!payloadSecret || payloadSecret.length < 32)) {
+  throw new Error(
+    '[payload.config] PAYLOAD_SECRET must be set to a strong (>=32 chars) value on Vercel. ' +
+      'Generate one with `openssl rand -hex 32` and add it to Vercel → Settings → Environment Variables ' +
+      '(enable for Production, Preview, AND Build), then redeploy.',
+  );
+}
 
 if (process.env.VERCEL && !isPostgres) {
   throw new Error(
@@ -43,7 +53,15 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Media, Events, Participants, ReminderLogs, Subscribers],
+  collections: [
+    Users,
+    Media,
+    Events,
+    Participants,
+    ReminderLogs,
+    Subscribers,
+    ContactMessages,
+  ],
   editor: lexicalEditor({}),
   plugins: blobToken
     ? [
@@ -57,7 +75,7 @@ export default buildConfig({
   db: isPostgres
     ? postgresAdapter({ pool: { connectionString: databaseUri } })
     : sqliteAdapter({ client: { url: 'file:./payload.db' } }),
-  secret: process.env.PAYLOAD_SECRET || 'change-me-in-production',
+  secret: payloadSecret || 'dev-only-secret-change-in-production',
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
