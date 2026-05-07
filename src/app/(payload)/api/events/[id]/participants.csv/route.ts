@@ -33,6 +33,7 @@ export async function GET(
     firstName: doc.firstName,
     lastName: doc.lastName,
     email: doc.email,
+    phone: doc.phone,
     company: doc.company,
     message: doc.message,
     createdAt: doc.createdAt,

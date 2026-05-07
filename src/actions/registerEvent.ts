@@ -8,6 +8,7 @@ const registrationSchema = z.object({
   firstName: z.string().min(2, 'Bitte gib deinen Vornamen ein.').max(100),
   lastName: z.string().min(2, 'Bitte gib deinen Nachnamen ein.').max(100),
   email: z.string().email('Bitte gib eine gültige E-Mail-Adresse ein.').max(254),
+  phone: z.string().max(30).optional(),
   company: z.string().max(200).optional(),
   message: z.string().max(2000).optional(),
   eventId: z.string().min(1).max(20),
@@ -38,6 +39,7 @@ export async function registerForEvent(
     firstName: formData.get('firstName') as string,
     lastName: formData.get('lastName') as string,
     email: formData.get('email') as string,
+    phone: formData.get('phone') as string,
     company: formData.get('company') as string,
     message: formData.get('message') as string,
     eventId: formData.get('eventId') as string,
@@ -52,7 +54,7 @@ export async function registerForEvent(
     return { status: 'error', message: 'Bitte prüfe deine Eingaben.', fieldErrors };
   }
 
-  const { firstName, lastName, email, company, message, eventId } = parsed.data;
+  const { firstName, lastName, email, phone, company, message, eventId } = parsed.data;
   const eventIdNum = Number(eventId);
 
   try {
@@ -102,6 +104,7 @@ export async function registerForEvent(
         firstName,
         lastName,
         email,
+        phone: phone || undefined,
         company: company || undefined,
         message: message || undefined,
         event: eventIdNum,

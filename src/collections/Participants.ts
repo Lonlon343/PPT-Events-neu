@@ -4,7 +4,7 @@ export const Participants: CollectionConfig = {
   slug: 'participants',
   admin: {
     useAsTitle: 'email',
-    defaultColumns: ['firstName', 'lastName', 'email', 'event', 'createdAt'],
+    defaultColumns: ['firstName', 'lastName', 'email', 'phone', 'event', 'createdAt'],
   },
   access: {
     read: ({ req }) => Boolean(req.user),
@@ -29,6 +29,11 @@ export const Participants: CollectionConfig = {
       name: 'email',
       type: 'email',
       required: true,
+    },
+    {
+      name: 'phone',
+      label: 'Telefon (optional)',
+      type: 'text',
     },
     {
       name: 'company',

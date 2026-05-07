@@ -2,12 +2,13 @@ type ParticipantExportRow = {
   firstName: string;
   lastName: string;
   email: string;
+  phone?: string | null;
   company?: string | null;
   message?: string | null;
   createdAt?: string;
 };
 
-const headers = ['Vorname', 'Nachname', 'E-Mail', 'Firma', 'Nachricht', 'Anmeldezeit'];
+const headers = ['Vorname', 'Nachname', 'E-Mail', 'Telefon', 'Firma', 'Nachricht', 'Anmeldezeit'];
 
 function escapeCsvValue(value: string) {
   if (value.includes('"') || value.includes(',') || value.includes('\n')) {
@@ -25,6 +26,7 @@ export function buildParticipantsCsv(rows: ParticipantExportRow[]) {
       row.firstName,
       row.lastName,
       row.email,
+      row.phone || '',
       row.company || '',
       row.message || '',
       row.createdAt ? new Date(row.createdAt).toLocaleString('de-DE') : '',

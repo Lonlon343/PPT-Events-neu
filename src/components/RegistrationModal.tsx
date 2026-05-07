@@ -76,7 +76,7 @@ export function RegistrationModal({ isOpen, onClose, event }: RegistrationModalP
           />
 
           {/* Modal */}
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={onClose}>
             <motion.div
               initial={{ opacity: 0, scale: 0.92, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -197,6 +197,18 @@ export function RegistrationModal({ isOpen, onClose, event }: RegistrationModalP
                             className={`w-full px-4 py-3 rounded-xl border text-ppt-blue placeholder:text-zinc-400 outline-none transition-all focus:ring-2 focus:ring-ppt-pink/20 focus:border-ppt-pink ${fieldErrors?.email ? 'border-red-300 bg-red-50' : 'border-zinc-200 bg-zinc-50'}`}
                           />
                           <FieldError errors={fieldErrors?.email} />
+                        </div>
+
+                        <div>
+                          <label className="block text-xs font-bold text-ppt-blue mb-1.5 uppercase tracking-wide">
+                            Telefon <span className="text-zinc-400 font-normal normal-case">(optional)</span>
+                          </label>
+                          <input
+                            name="phone"
+                            type="tel"
+                            placeholder="+49 123 456789"
+                            className="w-full px-4 py-3 rounded-xl border border-zinc-200 bg-zinc-50 text-ppt-blue placeholder:text-zinc-400 outline-none transition-all focus:ring-2 focus:ring-ppt-pink/20 focus:border-ppt-pink"
+                          />
                         </div>
 
                         <div>

@@ -103,8 +103,8 @@ export default function DatenschutzPage() {
           <h2 className="text-xl font-bold mt-8">8. Event-Anmeldung</h2>
           <p>
             Wenn Sie sich über unsere Website zu einer Veranstaltung anmelden, verarbeiten
-            wir folgende Daten: Vorname, Nachname, E-Mail-Adresse sowie optional Ihren
-            Firmennamen und eine Nachricht an uns. Diese Daten werden zur Durchführung der
+            wir folgende Daten: Vorname, Nachname, E-Mail-Adresse sowie optional Telefonnummer,
+            Firmenname und eine Nachricht an uns. Diese Daten werden zur Durchführung der
             Veranstaltung (Teilnehmerverwaltung, Versand von Bestätigungs- und
             Erinnerungsmails) verwendet.
           </p>
