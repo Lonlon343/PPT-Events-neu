@@ -23,7 +23,10 @@ export const Events: CollectionConfig = {
     useAsTitle: 'title',
     components: {
       edit: {
-        beforeDocumentControls: ['@/components/admin/EventParticipantsExportButton'],
+        beforeDocumentControls: [
+          '@/components/admin/EventDuplicateButton',
+          '@/components/admin/EventParticipantsExportButton',
+        ],
       },
     },
   },
@@ -175,6 +178,16 @@ export const Events: CollectionConfig = {
     {
       name: 'capacity',
       type: 'number',
+    },
+    {
+      name: 'recurrenceWeeks',
+      label: 'Wiederholung (Wochen)',
+      type: 'number',
+      defaultValue: 2,
+      admin: {
+        position: 'sidebar',
+        description: 'Abstand in Wochen für „Nächste Occurrence erstellen".',
+      },
     },
     {
       name: 'status',
