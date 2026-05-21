@@ -5,6 +5,12 @@ export const Events: CollectionConfig = {
   hooks: {
     beforeDelete: [
       async ({ req, id }) => {
+        // Delete reminder-logs first (FK → participants), then participants (FK → events)
+        await req.payload.delete({
+          collection: 'reminder-logs',
+          where: { event: { equals: id } },
+          req,
+        });
         await req.payload.delete({
           collection: 'participants',
           where: { event: { equals: id } },
