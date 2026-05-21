@@ -131,10 +131,12 @@ export async function registerForEvent(
               year: 'numeric',
               month: 'long',
               day: 'numeric',
+              timeZone: 'Europe/Berlin',
             }),
             eventTime: new Date(event.startDate as string).toLocaleTimeString('de-DE', {
               hour: '2-digit',
               minute: '2-digit',
+              timeZone: 'Europe/Berlin',
             }),
             eventLocation: event.location as string,
             eventType: (event.eventType as 'online' | 'in-person') || 'in-person',

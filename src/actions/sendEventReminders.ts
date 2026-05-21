@@ -115,10 +115,12 @@ export async function sendEventReminders(dryRun = false) {
               year: 'numeric',
               month: 'long',
               day: 'numeric',
+              timeZone: 'Europe/Berlin',
             }),
             eventTime: new Date(ev.startDate).toLocaleTimeString('de-DE', {
               hour: '2-digit',
               minute: '2-digit',
+              timeZone: 'Europe/Berlin',
             }),
             eventLocation: ev.location || '',
             eventType: ev.eventType || 'in-person',

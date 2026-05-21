@@ -22,10 +22,11 @@ const FALLBACK_IMAGE =
 export function mapPayloadEventToCard(ev: PayloadEvent): EventType {
   const start = new Date(ev.startDate);
   const end = new Date(ev.endDate);
+  const tz = 'Europe/Berlin';
   const time =
-    start.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }) +
+    start.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit', timeZone: tz }) +
     ' - ' +
-    end.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+    end.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit', timeZone: tz });
 
   return {
     id: ev.id,
@@ -36,9 +37,9 @@ export function mapPayloadEventToCard(ev: PayloadEvent): EventType {
     location: ev.location ?? '',
     speaker: ev.speaker,
     time,
-    day: start.getDate().toString(),
-    month: start.toLocaleString('de-DE', { month: 'short' }).toUpperCase(),
-    dateFull: start.toLocaleDateString('de-DE', { day: 'numeric', month: 'long' }),
+    day: start.toLocaleString('de-DE', { day: 'numeric', timeZone: tz }),
+    month: start.toLocaleString('de-DE', { month: 'short', timeZone: tz }).toUpperCase(),
+    dateFull: start.toLocaleDateString('de-DE', { day: 'numeric', month: 'long', timeZone: tz }),
     image: ev.image?.url || FALLBACK_IMAGE,
     eventStatus: ev.eventStatus,
   };
@@ -53,7 +54,7 @@ export function groupEventsByMonth(events: EventType[]) {
 
   for (const event of sorted) {
     const date = new Date(event.startDate);
-    const monthKey = date.toLocaleString('de-DE', { month: 'long', year: 'numeric' });
+    const monthKey = date.toLocaleString('de-DE', { month: 'long', year: 'numeric', timeZone: 'Europe/Berlin' });
     const current = groups.get(monthKey) ?? [];
     current.push(event);
     groups.set(monthKey, current);
@@ -76,6 +77,7 @@ export function groupEventsByDay(events: EventType[]) {
       day: 'numeric',
       month: 'long',
       year: 'numeric',
+      timeZone: 'Europe/Berlin',
     });
     const current = groups.get(key) ?? [];
     current.push(event);
