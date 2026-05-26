@@ -16,6 +16,8 @@ const nextConfig: NextConfig = {
       { protocol: 'https', hostname: '*.public.blob.vercel-storage.com' },
       { protocol: 'https', hostname: '*.blob.vercel-storage.com' },
       { protocol: 'https', hostname: 'ppt-events.de' },
+      { protocol: 'https', hostname: 'www.events-ppt.de' },
+      { protocol: 'https', hostname: 'events-ppt.de' },
     ],
   },
   async headers() {

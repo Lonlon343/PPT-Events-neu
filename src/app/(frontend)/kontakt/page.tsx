@@ -25,7 +25,7 @@ export default function KontaktPage() {
               <p className="text-sm font-semibold uppercase tracking-wide text-ppt-blue/70">
                 PPT-Events · Pars pro Toto
               </p>
-              <p className="text-sm">E-Mail: support@ppt-events.de</p>
+              <p className="text-sm">E-Mail: info@ppt-events.de</p>
               <p className="text-sm">Instagram: @pptevents</p>
             </div>
           </div>

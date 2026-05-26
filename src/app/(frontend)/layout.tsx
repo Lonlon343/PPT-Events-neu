@@ -9,7 +9,7 @@ const inter = Inter({
   subsets: ["latin"],
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://ppt-events.de';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.events-ppt.de';
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),

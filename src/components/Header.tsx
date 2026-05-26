@@ -91,7 +91,7 @@ export function Header() {
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.4 }}
-              href="mailto:support@ppt-events.de"
+              href="mailto:info@ppt-events.de"
               className="hover:text-ppt-pink transition-transform hover:scale-110 duration-200"
             >
               <Mail size={20} />
@@ -142,7 +142,7 @@ export function Header() {
                   </span>
                 </a>
                 <a
-                  href="mailto:support@ppt-events.de"
+                  href="mailto:info@ppt-events.de"
                   className="hover:text-ppt-pink"
                 >
                   <Mail size={28} />

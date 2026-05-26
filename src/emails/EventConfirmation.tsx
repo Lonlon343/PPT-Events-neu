@@ -95,8 +95,8 @@ export function EventConfirmationEmail({
 
               <Text className="text-zinc-500 text-sm leading-relaxed">
                 Falls du Fragen hast oder Änderungen benötigst, erreichst du uns jederzeit unter{' '}
-                <a href="mailto:support@ppt-events.de" className="text-[#F018D5]">
-                  support@ppt-events.de
+                <a href="mailto:info@events-ppt.de" className="text-[#F018D5]">
+                  info@events-ppt.de
                 </a>.
               </Text>
 
@@ -112,8 +112,8 @@ export function EventConfirmationEmail({
             {/* Footer */}
             <Text className="text-center text-zinc-400 text-xs mt-6">
               © {new Date().getFullYear()} PPT-Events · Pars pro Toto ·{' '}
-              <a href="https://ppt-events.de" className="text-zinc-400">
-                ppt-events.de
+              <a href="https://www.events-ppt.de" className="text-zinc-400">
+                events-ppt.de
               </a>
             </Text>
           </Container>

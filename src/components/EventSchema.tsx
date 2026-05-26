@@ -38,7 +38,7 @@ export function EventSchema({
     organizer: {
       '@type': 'Organization',
       name: 'PPT-Events',
-      url: 'https://ppt-events.de',
+      url: 'https://www.events-ppt.de',
     },
     url,
   };
