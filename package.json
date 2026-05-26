@@ -18,6 +18,7 @@
     "@payloadcms/richtext-lexical": "^3.82.1",
     "@payloadcms/storage-vercel-blob": "^3.82.1",
     "@react-email/components": "^1.0.12",
+    "@react-email/render": "^1.0.4",
     "@types/canvas-confetti": "^1.9.0",
     "canvas-confetti": "^1.9.4",
     "class-variance-authority": "^0.7.1",
