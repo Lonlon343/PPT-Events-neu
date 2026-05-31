@@ -1,27 +1,14 @@
-'use server';
+import { neon } from '@neondatabase/serverless';
+import { Resend } from 'resend';
+import { createElement } from 'react';
+import { EventReminderEmail } from '@/emails/EventReminder';
 
-import { getPayload } from 'payload';
-import configPromise from '@payload-config';
-
-type PayloadEvent = {
-  id: string | number;
-  title: string;
-  startDate: string;
-  location?: string;
-  eventType?: 'online' | 'in-person';
-  onlineLink?: string;
-  reminderHoursBefore?: number;
-};
-
-type Participant = {
-  id: string | number;
-  firstName: string;
-  email: string;
-};
-
-type ParticipantRecord = {
-  id: string;
-  event: string | PayloadEvent;
+type ReminderResult = {
+  ok: boolean;
+  sent?: number;
+  skipped?: number;
+  failures?: Array<{ participantId: string; error: string }>;
+  message?: string;
 };
 
 function getReminderWindow(hoursBefore: number) {
@@ -32,63 +19,59 @@ function getReminderWindow(hoursBefore: number) {
   return { windowStart, windowEnd };
 }
 
-export async function sendEventReminders(dryRun = false) {
+export async function sendEventReminders(dryRun = false): Promise<ReminderResult> {
   if (!process.env.RESEND_API_KEY) {
-    return { ok: false, message: 'RESEND_API_KEY fehlt. Keine Erinnerungen gesendet.' };
+    return { ok: false, message: 'RESEND_API_KEY fehlt.' };
+  }
+  if (!process.env.DATABASE_URL) {
+    return { ok: false, message: 'DATABASE_URL fehlt.' };
   }
 
-  const payload = await getPayload({ config: configPromise });
+  const sql = neon(process.env.DATABASE_URL);
+  const resend = new Resend(process.env.RESEND_API_KEY);
 
-  const { docs: events } = await payload.find({
-    collection: 'events',
-    where: {
-      status: { equals: 'published' },
-      eventStatus: { equals: 'upcoming' },
-    },
-    limit: 200,
-    sort: 'startDate',
-  });
+  const events = await sql`
+    SELECT id, title, start_date, location, event_type, online_link, reminder_hours_before
+    FROM events
+    WHERE status = 'published'
+      AND event_status = 'upcoming'
+    ORDER BY start_date
+  `;
 
   let sent = 0;
   let skipped = 0;
   const failures: Array<{ participantId: string; error: string }> = [];
 
-  for (const ev of events as PayloadEvent[]) {
-    const hoursBefore = ev.reminderHoursBefore ?? 24;
+  for (const ev of events) {
+    const hoursBefore = (ev.reminder_hours_before as number) ?? 24;
     const { windowStart, windowEnd } = getReminderWindow(hoursBefore);
-    const start = new Date(ev.startDate);
+    const start = new Date(ev.start_date as string);
 
-    if (start < windowStart || start > windowEnd) {
-      continue;
-    }
+    if (start < windowStart || start > windowEnd) continue;
 
-    const { docs: participants } = await payload.find({
-      collection: 'participants',
-      where: { event: { equals: ev.id } },
-      limit: 1000,
-    });
+    const participants = await sql`
+      SELECT id, first_name, email
+      FROM participants
+      WHERE event_id = ${ev.id as number}
+    `;
 
-    for (const participant of participants as Participant[]) {
+    for (const p of participants) {
       try {
-        const reminderWindowStart = new Date(windowStart);
-        reminderWindowStart.setMinutes(0, 0, 0);
-        const reminderWindowEnd = new Date(windowEnd);
-        reminderWindowEnd.setMinutes(59, 59, 999);
+        const logWindowStart = new Date(windowStart);
+        logWindowStart.setMinutes(0, 0, 0);
+        const logWindowEnd = new Date(windowEnd);
+        logWindowEnd.setMinutes(59, 59, 999);
 
-        const alreadySent = await payload.find({
-          collection: 'reminder-logs',
-          where: {
-            and: [
-              { event: { equals: ev.id } },
-              { participant: { equals: participant.id } },
-              { reminderAt: { greater_than_equal: reminderWindowStart.toISOString() } },
-              { reminderAt: { less_than_equal: reminderWindowEnd.toISOString() } },
-            ],
-          },
-          limit: 1,
-        });
+        const existing = await sql`
+          SELECT id FROM reminder_logs
+          WHERE event_id = ${ev.id as number}
+            AND participant_id = ${p.id as number}
+            AND reminder_at >= ${logWindowStart.toISOString()}
+            AND reminder_at <= ${logWindowEnd.toISOString()}
+          LIMIT 1
+        `;
 
-        if (alreadySent.docs.length > 0) {
+        if (existing.length > 0) {
           skipped += 1;
           continue;
         }
@@ -98,49 +81,41 @@ export async function sendEventReminders(dryRun = false) {
           continue;
         }
 
-        const { Resend } = await import('resend');
-        const { EventReminderEmail } = await import('@/emails/EventReminder');
-        const { createElement } = await import('react');
-
-        const resend = new Resend(process.env.RESEND_API_KEY);
         await resend.emails.send({
           from: process.env.EMAIL_FROM || 'PPT-Events <noreply@ppt-events.de>',
-          to: process.env.EMAIL_TEST_OVERRIDE || participant.email,
-          subject: `Erinnerung: ${ev.title}`,
+          to: process.env.EMAIL_TEST_OVERRIDE || (p.email as string),
+          subject: `Erinnerung: ${ev.title as string}`,
           react: createElement(EventReminderEmail, {
-            firstName: participant.firstName,
-            eventTitle: ev.title,
-            eventDate: new Date(ev.startDate).toLocaleDateString('de-DE', {
+            firstName: p.first_name as string,
+            eventTitle: ev.title as string,
+            eventDate: new Date(ev.start_date as string).toLocaleDateString('de-DE', {
               weekday: 'long',
               year: 'numeric',
               month: 'long',
               day: 'numeric',
               timeZone: 'Europe/Berlin',
             }),
-            eventTime: new Date(ev.startDate).toLocaleTimeString('de-DE', {
+            eventTime: new Date(ev.start_date as string).toLocaleTimeString('de-DE', {
               hour: '2-digit',
               minute: '2-digit',
               timeZone: 'Europe/Berlin',
             }),
-            eventLocation: ev.location || '',
-            eventType: ev.eventType || 'in-person',
-            onlineLink: ev.onlineLink,
+            eventLocation: (ev.location as string) || '',
+            eventType: (ev.event_type as 'online' | 'in-person') || 'in-person',
+            onlineLink: (ev.online_link as string | undefined) || undefined,
           }),
         });
 
         sent += 1;
 
-        await payload.create({
-          collection: 'reminder-logs',
-          data: {
-            event: ev.id,
-            participant: participant.id,
-            reminderAt: new Date().toISOString(),
-          },
-        });
+        const now = new Date().toISOString();
+        await sql`
+          INSERT INTO reminder_logs (event_id, participant_id, reminder_at, created_at, updated_at)
+          VALUES (${ev.id as number}, ${p.id as number}, ${now}, ${now}, ${now})
+        `;
       } catch (err) {
         failures.push({
-          participantId: String(participant.id),
+          participantId: String(p.id),
           error: err instanceof Error ? err.message : 'Unbekannter Fehler',
         });
       }
