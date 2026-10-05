@@ -27,7 +27,7 @@ export function Header() {
     <header
       className={`fixed top-0 w-full z-50 transition-all duration-300 ${isScrolled
         ? "bg-ppt-blue/95 backdrop-blur-md shadow-md py-4"
-        : "bg-[linear-gradient(135deg,rgba(240,24,213,0.12),rgba(0,50,91,0.08),rgba(255,255,255,0.85))] backdrop-blur-md border-b border-ppt-blue/10 py-6"
+        : "bg-ppt-blue/80 backdrop-blur-md border-b border-white/10 py-6"
         }`}
     >
       <div className="container mx-auto px-6 lg:px-12 flex items-center justify-between">
@@ -58,8 +58,7 @@ export function Header() {
             >
               <Link
                 href={link.href}
-                className={`text-base font-medium transition-colors relative group ${isScrolled ? "text-white/90 hover:text-ppt-pink" : "text-ppt-blue/90 hover:text-ppt-pink"
-                  }`}
+                className="text-base font-medium transition-colors relative group text-white/90 hover:text-ppt-pink"
               >
                 {link.name}
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-ppt-pink transition-all duration-300 group-hover:w-full" />
@@ -70,7 +69,7 @@ export function Header() {
 
         {/* Social Icons (Desktop) & Mobile Toggle */}
         <div className="flex items-center space-x-4">
-          <div className={`hidden md:flex items-center space-x-4 ${isScrolled ? "text-white" : "text-ppt-blue"}`}>
+          <div className="hidden md:flex items-center space-x-4 text-white">
             <motion.a
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -99,7 +98,7 @@ export function Header() {
           </div>
 
           <button
-            className={`md:hidden ml-4 focus:outline-none ${isScrolled ? "text-white" : "text-ppt-blue"}`}
+            className="md:hidden ml-4 focus:outline-none text-white"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
             {mobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
