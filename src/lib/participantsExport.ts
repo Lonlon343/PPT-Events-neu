@@ -18,7 +18,9 @@ const FORMULA_TRIGGER = /^[=+\-@\t\r]/;
 // break would start a new cell when the file is split on ';' or lines, so it is
 // neutralized there as well (OWASP: also take care of the field separator).
 // Quotes between the separator and the trigger (x;"=1) are covered too.
-const EMBEDDED_FORMULA_TRIGGER = /([;\r\n])(?="*[=+\-@\t\r])/g;
+// CR is not a trigger here: it is itself a separator, so a trigger after it gets
+// its own prefix, and blank lines in CRLF text stay unchanged.
+const EMBEDDED_FORMULA_TRIGGER = /([;\r\n])(?="*[=+\-@\t])/g;
 
 function escapeCsvValue(value: string) {
   const isFormula = FORMULA_TRIGGER.test(value);
