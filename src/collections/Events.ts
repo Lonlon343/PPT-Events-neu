@@ -31,7 +31,9 @@ export const Events: CollectionConfig = {
     },
   },
   access: {
-    read: () => true,
+    // Anonymous visitors only see published events; logged-in admins see all.
+    // Matches the frontend queries, which already filter on status === 'published'.
+    read: ({ req }) => (req.user ? true : { status: { equals: 'published' } }),
     create: ({ req }) => Boolean(req.user),
     update: ({ req }) => Boolean(req.user),
     delete: ({ req }) => Boolean(req.user),
