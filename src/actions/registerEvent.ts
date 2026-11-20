@@ -60,14 +60,18 @@ export async function registerForEvent(
   try {
     const payload = await getPayload({ config: configPromise });
 
-    // Check capacity
     // Local API runs with overrideAccess, so check the publish status explicitly:
     // registrations are only accepted for published events (drafts are not public).
-    const event = await payload.findByID({ collection: 'events', id: eventIdNum });
+    // Unknown, invalid, draft and unpublished IDs all get the same answer.
+    const event =
+      Number.isInteger(eventIdNum) && eventIdNum > 0
+        ? await payload.findByID({ collection: 'events', id: eventIdNum, disableErrors: true })
+        : null;
     if (!event || event.status !== 'published') {
       return { status: 'error', message: 'Event nicht gefunden.' };
     }
 
+    // Check capacity
     if (event.capacity) {
       const { totalDocs } = await payload.find({
         collection: 'participants',
