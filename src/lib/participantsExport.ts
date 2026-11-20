@@ -10,11 +10,18 @@ type ParticipantExportRow = {
 
 const headers = ['Vorname', 'Nachname', 'E-Mail', 'Telefon', 'Firma', 'Nachricht', 'Anmeldezeit'];
 
+// Cells starting with one of these characters are interpreted as formulas by
+// spreadsheet apps (CSV/formula injection). OWASP: prefix with a single quote
+// and wrap the cell in double quotes.
+const FORMULA_TRIGGER = /^[=+\-@\t\r]/;
+
 function escapeCsvValue(value: string) {
-  if (value.includes('"') || value.includes(',') || value.includes('\n')) {
-    return `"${value.replace(/"/g, '""')}"`;
+  const isFormula = FORMULA_TRIGGER.test(value);
+  const cell = isFormula ? `'${value}` : value;
+  if (isFormula || /[",\r\n]/.test(cell)) {
+    return `"${cell.replace(/"/g, '""')}"`;
   }
-  return value;
+  return cell;
 }
 
 export function buildParticipantsCsv(rows: ParticipantExportRow[]) {
