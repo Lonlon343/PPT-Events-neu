@@ -63,8 +63,10 @@ export async function registerForEvent(
     // Local API runs with overrideAccess, so check the publish status explicitly:
     // registrations are only accepted for published events (drafts are not public).
     // Unknown, invalid, draft and unpublished IDs all get the same answer.
+    // Upper bound: events.id is a Postgres serial (int4); larger values would
+    // raise an out-of-range error instead of "not found".
     const event =
-      Number.isInteger(eventIdNum) && eventIdNum > 0
+      Number.isInteger(eventIdNum) && eventIdNum > 0 && eventIdNum <= 2147483647
         ? await payload.findByID({ collection: 'events', id: eventIdNum, disableErrors: true })
         : null;
     if (!event || event.status !== 'published') {
