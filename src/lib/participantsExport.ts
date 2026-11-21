@@ -10,11 +10,26 @@ type ParticipantExportRow = {
 
 const headers = ['Vorname', 'Nachname', 'E-Mail', 'Telefon', 'Firma', 'Nachricht', 'Anmeldezeit'];
 
+// Cells starting with one of these characters are interpreted as formulas by
+// spreadsheet apps (CSV/formula injection). OWASP: prefix with a single quote
+// and wrap the cell in double quotes.
+const FORMULA_TRIGGER = /^[=+\-@\t\r]/;
+// A trigger right after ';' (the list separator of e.g. German Excel) or a line
+// break would start a new cell when the file is split on ';' or lines, so it is
+// neutralized there as well (OWASP: also take care of the field separator).
+// Quotes between the separator and the trigger (x;"=1) are covered too.
+// CR is not a trigger here: it is itself a separator, so a trigger after it gets
+// its own prefix, and blank lines in CRLF text stay unchanged.
+const EMBEDDED_FORMULA_TRIGGER = /([;\r\n])(?="*[=+\-@\t])/g;
+
 function escapeCsvValue(value: string) {
-  if (value.includes('"') || value.includes(',') || value.includes('\n')) {
-    return `"${value.replace(/"/g, '""')}"`;
+  const isFormula = FORMULA_TRIGGER.test(value);
+  let cell = value.replace(EMBEDDED_FORMULA_TRIGGER, "$1'");
+  if (isFormula) cell = `'${cell}`;
+  if (cell !== value || /[",;\r\n]/.test(cell)) {
+    return `"${cell.replace(/"/g, '""')}"`;
   }
-  return value;
+  return cell;
 }
 
 export function buildParticipantsCsv(rows: ParticipantExportRow[]) {
